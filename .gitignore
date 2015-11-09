@@ -1,3 +1,7 @@
+devel/
+build/
+install/
+
 build/
 bin/
 lib/
