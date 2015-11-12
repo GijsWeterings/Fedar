@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
 
     // Rate of while loop
-    ros::Rate loop_rate(3);
+    ros::Rate loop_rate(1.0/5.0);
     C3mxlROS *motorLeft  = new C3mxlROS("/threemxl_com");
     C3mxlROS *motorRight = new C3mxlROS("/threemxl_com");
 
@@ -24,16 +24,25 @@ int main(int argc, char **argv) {
     motorLeft->set3MxlMode(POSITION_MODE);
     motorRight->set3MxlMode(POSITION_MODE);
 
-    motorLeft->setSpeed(1.0);
-    motorRight->setSpeed(1.0);
-
+    motorLeft->setWheelDiameter(0.297);
+    motorRight->setWheelDiameter(0.297);
+    
     while(ros::ok()) {
         loop_rate.sleep();
-        motorLeft->getPos();
-        motorRight->getPos();
-        std::cout << motorLeft->presentPos() << " - " << motorRight->presentPos() << std::endl;
-        motorLeft->setPos(motorLeft->presentPos() + 0.3);
-        motorRight->setPos(motorRight->presentPos() + 0.3);
+     
+        motorLeft->getLinearPos();
+        motorRight->getLinearPos();
+        
+        motorLeft->setLinearPos(1.0, 20.0);
+        motorRight->setLinearPos(1.0, 20.0);
+
+        loop_rate.sleep();
+
+        motorLeft->getLinearPos();
+        motorRight->getLinearPos();
+
+        motorLeft->setLinearPos(0.0, 25.0);
+        motorRight->setLinearPos(0.0, 25.0);
     }
 }
 
