@@ -1,0 +1,8 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: fedar
+    relative_path: robots/fedar.URDF
+  SRDF:
+    relative_path: config/fedar.srdf
+  CONFIG:
+    generated_timestamp: 1448532466
