@@ -1,0 +1,4 @@
+<launch>
+    <!-- Launch environment handlers -->
+    <include file="$(find environment)/launch/environment.launch" />
+</launch>

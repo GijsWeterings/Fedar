@@ -1,0 +1,9 @@
+<launch>
+    <node name="fedar_position_publisher" pkg="environment" type="fedar_position_publisher" />
+
+
+    <include file="$(find openni_launch)/launch/openni.launch" />
+    <include file="$(find ar_track_alvar)/launch/my_indiv.launch" />
+    <include file="$(find moveit)/launch/demo.launch" />
+
+</launch>
