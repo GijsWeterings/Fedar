@@ -25,6 +25,8 @@
     <group_state name="scooppos" group="left_arm" />
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="left_eef" parent_link="wrist_link" group="left_scoop" />
+    <end_effector name="leftwheel" parent_link="base_link" group="base" />
+    <end_effector name="rightwheel" parent_link="base_link" group="base" />
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
     <virtual_joint name="left_drive_odom" type="planar" parent_frame="world" child_link="left_drive_wheel_link" />
     <virtual_joint name="right_drive_odom" type="planar" parent_frame="world" child_link="right_drive_wheel_link" />
