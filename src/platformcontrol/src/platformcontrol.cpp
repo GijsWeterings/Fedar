@@ -1,12 +1,4 @@
-#include <threemxl/C3mxlROS.h>
-#include <threemxl/C3mxl.h>
-#include <trajectory_msgs/JointTrajectory.h>
-
-C3mxlROS* initializeWheel(int id);
-void executeTrajectory(trajectory_msgs::JointTrajectory msg);
-
-C3mxlROS *motorLeft;
-C3mxlROS *motorRight;
+#include "platformcontrol.h"
 
 /**
  * Initializes a wheel motor
@@ -14,19 +6,12 @@ C3mxlROS *motorRight;
  * @return    Pointer to a C3mxlROS object, used to control the motor.
  */
 C3mxlROS* initializeWheel(int id){
-    // Initialize 3mxl node
+    // Initialize 3mxl node and set config
     C3mxlROS *motor = new C3mxlROS("/threemxl_com");
-
-    // Initialize config for motor
     CDxlConfig *config  = new CDxlConfig();
-
-    // Set motor ID and assign config to motor node.
     motor->setConfig(config->setID(id));
-
-    // Initialize motor
     motor->init(false);
 
-    // Set motor to POSITION_MODE, so we can give it a position in meters
     motor->set3MxlMode(POSITION_MODE);
 
     // Set the wheel diameter, so the encoder data can be translated to distance
@@ -35,13 +20,25 @@ C3mxlROS* initializeWheel(int id){
     return motor;
 }
 
-void executeTrajectory(trajectory_msgs::JointTrajectory msg) {
-    // Update
+void executeTrajectory(const std_msgs::Float32::ConstPtr& msg) {
+    updatePosition();
+
+    motorLeft->setLinearPos(msg->data, 20.0);
+    motorRight->setLinearPos(msg->data, 20.0);
+}
+
+void updatePosition() {
     motorLeft->getLinearPos();
     motorRight->getLinearPos();
+}
 
-    motorLeft->setLinearPos(3.0, 20.0);
-    motorRight->setLinearPos(3.0, 20.0);
+void updateTF() {
+    updatePosition();
+
+    tf::Transform transform;
+    transform.setOrigin( tf::Vector3(0, motorLeft->presentPos(), 0.0) );
+
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "base_link"));
 }
 
 
@@ -58,7 +55,10 @@ int main(int argc, char **argv) {
     motorRight = initializeWheel(107);
 
     // Subscriber
-    ros::Subscriber sub = nh.subscribe("motorcontrol", 1000, executeTrajectory);
+    ros::Subscriber sub = nh.subscribe("platformposition", 1000, executeTrajectory);
 
-    ros::spin();
+    while(ros::ok()) {
+        updateTF();
+        loop_rate.sleep();
+    }
 }

@@ -120,7 +120,7 @@ include_directories(
 
 ## Declare a C++ library
 add_library(move_base
-  src/${PROJECT_NAME}/src/move_base.cpp
+  src/move_base.cpp
 )
 
 ## Add cmake target dependencies of the library
