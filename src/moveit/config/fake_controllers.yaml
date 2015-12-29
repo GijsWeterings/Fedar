@@ -1,8 +1,4 @@
 controller_list:
-  - name: fake_base_controller
-    joints:
-      - left_drive_wheel_joint
-      - right_drive_wheel_joint
   - name: fake_left_arm_controller
     joints:
       - upper_arm_joint
