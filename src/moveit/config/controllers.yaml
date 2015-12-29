@@ -1,0 +1,22 @@
+controller_list:
+  - name: base_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: true
+    joints:
+      - left_drive_wheel_joint
+      - right_drive_wheel_joint
+  - name: left_arm_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: true
+    joints:
+      - upper_arm_joint
+      - lower_arm_joint
+      - wrist_joint
+  - name: left_scoop_controller
+    action_ns: follow_joint_trajectory
+    type: FollowJointTrajectory
+    default: true
+    joints:
+      - scoop_joint
