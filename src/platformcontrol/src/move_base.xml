@@ -1,0 +1,5 @@
+<library path="lib/move_base">
+  <class type="my_moveit_controller_manager::MoveItControllerManager" base_class_type="moveit_controller_manager::MoveItControllerManager">
+    <description>MotionControllerHandle plugin.</description>
+  </class>
+</library>

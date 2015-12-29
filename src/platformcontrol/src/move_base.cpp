@@ -62,8 +62,9 @@ namespace my_moveit_controller_manager
         */
         virtual void getControllersList(std::vector<std::string> &names)
         {
-            names.resize(1);
-            names[0] = "base_controller";
+            names.resize(2);
+            names[0] = "left_arm_controller";
+            names[1] = "left_scoop_controller";
         }
 
         /*
@@ -88,11 +89,13 @@ namespace my_moveit_controller_manager
         virtual void getControllerJoints(const std::string &name, std::vector<std::string> &joints)
         {
             joints.clear();
-            if (name == "base_controller")
-            {
-                // declare which joints this controller actuates
-                joints.push_back("left_drive_wheel_joint");
-                joints.push_back("right_drive_wheel_joint");
+            if(name == "left_arm_controller") {
+                joints.push_back("upper_arm_joint");
+                joints.push_back("lower_arm_joint");
+                joints.push_back("wrist_joint");
+            }
+            else if(name == "left_scoop_controller") {
+                joints.push_back("scoop_joint");
             }
         }
 
