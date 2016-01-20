@@ -1,20 +1,26 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(platformcontrol)
+project(armcontrol)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  actionlib
+  actionlib_msgs
   roscpp
-  std_msgs
+  joint_state_publisher
+  urdf
   threemxl
   moveit_ros_planning_interface
+  manipulation_msgs
   tf
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
-#find_package(threemxl REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system)
+find_package(cmake_modules REQUIRED)
+find_package(Eigen REQUIRED)
+
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -69,7 +75,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs
+#   actionlib_msgs
 # )
 
 ################################################
@@ -102,10 +108,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES platformcontrol
-  CATKIN_DEPENDS roscpp std_msgs moveit_ros_planning_interface
-  DEPENDS system_lib threemxl
+#  INCLUDE_DIRS include
+#  LIBRARIES armcontrol
+#  CATKIN_DEPENDS actionlib actionlib_msgs roscpp
+#  DEPENDS system_lib
 )
 
 ###########
@@ -120,29 +126,41 @@ include_directories(
 )
 
 ## Declare a C++ library
-add_library(move_base
-  src/move_base.cpp
-)
+# add_library(armcontrol
+#   src/${PROJECT_NAME}/armcontrol.cpp
+# )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(platformcontrol ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(armcontrol ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(platformcontrol src/platformcontrol.cpp)
-#add_executable(move_base src/move_base.cpp)
+# add_executable(armcontrol_node src/armcontrol_action_server.cpp)
+add_executable(armcontrol_action_server src/armcontrol_action_server.cpp)
+#add_executable(armcontrol_action_client src/armcontrol_action_client.cpp)
+add_executable(arm_pick_place src/arm_pick_place.cpp)
+add_executable(armcontrol_driver src/armcontrol_driver.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(platformcontrol_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(armcontrol_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(platformcontrol
+target_link_libraries(armcontrol_action_server
   ${catkin_LIBRARIES}
+  ${EIGEN_INCLUDE_DIRS}
 )
-target_link_libraries(move_base
+# target_link_libraries(armcontrol_action_client
+#   ${catkin_LIBRARIES}
+#)
+target_link_libraries(arm_pick_place
   ${catkin_LIBRARIES}
+  ${EIGEN_INCLUDE_DIRS}
+)
+target_link_libraries(armcontrol_driver
+  ${catkin_LIBRARIES}
+  ${EIGEN_INCLUDE_DIRS}
 )
 
 #############
@@ -160,7 +178,7 @@ target_link_libraries(move_base
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS platformcontrol platformcontrol_node
+# install(TARGETS armcontrol armcontrol_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -185,7 +203,7 @@ target_link_libraries(move_base
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_platformcontrol.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_armcontrol.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

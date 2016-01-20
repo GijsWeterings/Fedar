@@ -9,7 +9,8 @@ C3mxlROS* initializeWheel(int id){
     // Initialize 3mxl node and set config
     C3mxlROS *motor = new C3mxlROS("/threemxl_com");
     CDxlConfig *config  = new CDxlConfig();
-    motor->setConfig(config->setID(id));
+    config->setID(id);
+    motor->setConfig(config);
     motor->init(false);
 
     motor->set3MxlMode(POSITION_MODE);
@@ -38,13 +39,13 @@ void updateTF() {
     tf::Transform transform;
     transform.setOrigin( tf::Vector3(0, motorLeft->presentPos(), 0.0) );
 
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "base_link"));
+    //br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "base_link"));
 }
-
 
 int main(int argc, char **argv) {
     // Initialise node
     ros::init(argc, argv, "platformcontrol");
+
     // Initialise Nodehandler
     ros::NodeHandle nh;
 
@@ -59,6 +60,7 @@ int main(int argc, char **argv) {
 
     while(ros::ok()) {
         updateTF();
+        ros::spinOnce();
         loop_rate.sleep();
     }
 }

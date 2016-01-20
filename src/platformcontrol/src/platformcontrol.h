@@ -1,3 +1,4 @@
+#include <ros/ros.h>
 #include <threemxl/C3mxlROS.h>
 #include <threemxl/C3mxl.h>
 #include <std_msgs/Float32.h>
@@ -14,4 +15,4 @@ void updateTF();
 
 C3mxlROS *motorLeft;
 C3mxlROS *motorRight;
-static tf::TransformBroadcaster br;
+// static tf::TransformBroadcaster br;
