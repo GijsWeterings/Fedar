@@ -27,9 +27,13 @@ C3mxlROS* initializeMotor(int id){
     config->setID(id);
     motor->setConfig(config);
     motor->init(false);
-
-    motor->set3MxlMode(POSITION_MODE);
-
+    motor->set3MxlMode(EXTERNAL_INIT);
+    motor->setAcceleration(0.5);
+    motor->setSpeed(0.2);
+    motor->setTorque(0.2);
+    usleep(10000);
+    // motor->set3MxlMode(POSITION_MODE);
+    // motor->setPos(0.3, 0.1);
     return motor;
 }
 
@@ -115,9 +119,8 @@ int main(int argc, char **argv) {
     // Refresh rate
     ros::Rate loop_rate(30);
 
-    motor_upper  = initializeMotor(102);
-    motor_lower  = initializeMotor(103);
-
+    motor_upper  = initializeMotor(108, 1);
+    motor_lower  = initializeMotor(109, 1);
     // Subscriber
     ros::Subscriber sub = nh.subscribe("command", 10, executeTrajectory);
     ros::Publisher jointPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", 100);
