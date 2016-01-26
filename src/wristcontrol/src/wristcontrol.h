@@ -4,10 +4,12 @@
 #include <std_msgs/Float32.h>
 #include <tf/transform_broadcaster.h>
 #include <wristcontrol/scoopPosition.h>
+#include <wristcontrol/scoopPositionRequest.h>
+#include <wristcontrol/scoopPositionResponse.h>
 
 C3mxlROS* initializeWheel(int id);
 
-bool scoopMotion(std::string& request, bool& response);
+// bool scoopMotion(std::string& request, bool& response);
 
 void closeScoop();
 

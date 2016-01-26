@@ -12,8 +12,13 @@ C3mxlROS* initializeWheel(int id) {
     config->setID(id);
     motor->setConfig(config);
     motor->init(false);
-
+    // motor->set3MxlMode(EXTERNAL_INIT);
+    // motor->setAcceleration(0.5);
+    // motor->setSpeed(-0.1);
+    // motor->setTorque(-0.1);
+    // usleep(10000);
     motor->set3MxlMode(POSITION_MODE);
+    motor->setPos(0.2, 0.1);
 
     return motor;
 }
@@ -24,7 +29,7 @@ C3mxlROS* initializeWheel(int id) {
  * @param  response set to true iff a valid scoop position was set.
  * @return          returns true iff service call executed normally.
  */
-bool add(wristcontrol::scoopPosition::Request  &req,         wristcontrol::scoopPosition::Response &res) {
+bool scoopMotion(wristcontrol::scoopPosition::Request  &req, wristcontrol::scoopPosition::Response &res) {
     if (req.position == "open") {
         openScoop();
         res.succ = true;
@@ -77,10 +82,7 @@ int main(int argc, char **argv) {
 
     motorWrist  = initializeWheel(110);
 
-    scoopPosservice = nh.advertiseService("scoopPosition", scoopMotion);
-
-    // Subscriber
-    //ros::Subscriber sub = nh.subscribe("wristposition", 1000, closeScoop);
+    scoopPosservice = nh.advertiseService("scoopPosition", &scoopMotion);
 
     ros::spin();
 }
