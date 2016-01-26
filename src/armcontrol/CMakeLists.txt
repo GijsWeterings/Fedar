@@ -141,6 +141,7 @@ add_executable(armcontrol_action_server src/armcontrol_action_server.cpp)
 #add_executable(armcontrol_action_client src/armcontrol_action_client.cpp)
 add_executable(arm_pick_place src/arm_pick_place.cpp)
 add_executable(armcontrol_driver src/armcontrol_driver.cpp)
+add_executable(joint_state_publisher src/joint_state_publisher.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -162,6 +163,11 @@ target_link_libraries(armcontrol_driver
   ${catkin_LIBRARIES}
   ${EIGEN_INCLUDE_DIRS}
 )
+target_link_libraries(joint_state_publisher
+  ${catkin_LIBRARIES}
+  ${EIGEN_INCLUDE_DIRS}
+)
+
 
 #############
 ## Install ##
