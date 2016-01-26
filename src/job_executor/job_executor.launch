@@ -1,0 +1,4 @@
+<launch>
+    <node name="job_executor" pkg="job_executor" type="job_executor" output="screen">
+    </node>
+</launch>
