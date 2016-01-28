@@ -6,6 +6,7 @@ project(platedetector)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -49,11 +50,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  assertNoPlate.srv
+  assertPlate.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -63,10 +64,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -126,16 +127,16 @@ include_directories(
 # add_dependencies(platedetector ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(platedetector_node src/platedetector_node.cpp)
+add_executable(detector src/detector.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(platedetector_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(platedetector_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(detector
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

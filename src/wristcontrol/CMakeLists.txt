@@ -57,6 +57,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   FILES
   scoopPosition.srv
+  wristInitializeMotors.srv
 )
 
 generate_messages(

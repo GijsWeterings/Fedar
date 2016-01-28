@@ -38,50 +38,53 @@ void updateMotor() {
 
 void getJointNames(std::vector<std::string>& names) {
     names.clear();
-    names.push_back("upper_arm");
-    names.push_back("lower_arm");
+    names.push_back("upper_arm_joint");
+    names.push_back("lower_arm_joint");
 }
 
-void getJointAngles(std::vector<double>& angles) {
+void getJointAngles(std::vector<float>& angles) {
     angles.clear();
     angles.push_back(motor_upper->presentPos());
     angles.push_back(motor_lower->presentPos());
 }
 
-void getJointVelocities(std::vector<double>& vels) {
+void getJointVelocities(std::vector<float>& vels) {
     vels.clear();
     vels.push_back(motor_upper->presentSpeed());
     vels.push_back(motor_lower->presentSpeed());
 }
 
-void jointPublish() {
+void jointPublish(ros::Publisher jP) {
     updateMotor();
 
     /* ************** Publish joint angles ************** */
-    sensor_msgs::JointStatePtr msg = boost::make_shared<sensor_msgs::JointState>();
+    sensor_msgs::JointState msg;// = boost::make_shared<sensor_msgs::JointState>();
+    // msg.reset(new sensor_msgs::JointState);
     std::vector<std::string> joint_names;
-    std::vector<double> angles;
-    std::vector<double> vels;
+    std::vector<float> angles;
+    std::vector<float> vels;
 
     getJointNames(joint_names);
     getJointAngles(angles);
     getJointVelocities(vels);
 
     for (int i = 0; i < 2 ; ++i) {
-      msg->name.push_back(joint_names[i]);
-      msg->position.push_back(angles[i]);
-      msg->velocity.push_back(vels[i]);
+      msg.name.push_back(joint_names[i]);
+      msg.position.push_back(angles[i]);
+      msg.velocity.push_back(vels[i]);
     }
 
-    msg->header.stamp = ros::Time::now();
-    jointPublisher.publish(msg);
+    msg.header.stamp = ros::Time::now();
+    jP.publish(msg);
 }
 
 int main(int argc, char **argv) {
     // Initialise node
-    ros::init(argc, argv, "joint_state_publisher");
+    ros::init(argc, argv, "joint_state_publisher_fedar");
     // Initialise Nodehandler
     ros::NodeHandle nh;
+
+    ros::Publisher jointPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", 100);
 
     // Refresh rate
     ros::Rate loop_rate(30);
@@ -89,10 +92,8 @@ int main(int argc, char **argv) {
     motor_upper  = initializeMotor(108);
     motor_lower  = initializeMotor(109);
 
-    ros::Publisher jointPublisher = nh.advertise<sensor_msgs::JointState>("joint_states", 100);
-
     while(ros::ok()) {
-        jointPublish();
+        jointPublish(jointPublisher);
         ros::spinOnce();
         loop_rate.sleep();
     }

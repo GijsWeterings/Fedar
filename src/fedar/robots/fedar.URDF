@@ -406,18 +406,18 @@
     type="revolute">
     <origin
       xyz="0 0.015 0.9915"
-      rpy="1.5708 -0.94746 -1.5708" />
+      rpy="1.5708 -1.11746 -1.5708" />
     <parent
       link="base_link" />
     <child
       link="upper_arm_link" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
     <limit
       effort="0"
       velocity="0"
-      lower="-0.05"
-      upper="1.435"
+      lower="-0.051"
+      upper="0.983"
     />
   </joint>
   <link
@@ -475,8 +475,8 @@
     <limit
       effort="0"
       velocity="0"
-      lower="0.1198"
-      upper="1.6"
+      lower="-0.406"
+      upper="0.320"
     />
   </joint>
   <link
@@ -615,7 +615,7 @@
     <visual>
       <origin
         xyz="0 0 0"
-        rpy="1.5708 0 1.5708" />
+        rpy="2.1008 0 1.5708" />
       <geometry>
         <mesh
           filename="package://fedar/meshes/camera_link.STL" />
@@ -628,7 +628,7 @@
     </visual>
     <collision>
       <origin
-        xyz="0 0 0"
+        xyz="0.00019514 0.018811 0.0010567"
         rpy="1.5708 0 1.5708" />
       <geometry>
         <mesh
@@ -640,8 +640,8 @@
     name="camera_joint"
     type="fixed">
     <origin
-      xyz="-0.25453 -0.05 1.204"
-      rpy="0 0 -1.5708" />
+      xyz="-0.25453 -0.15 1.204"
+      rpy="0 0.7 -1.5708" />
     <parent
       link="base_link" />
     <child

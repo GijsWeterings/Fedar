@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_ros_planning_interface
   manipulation_msgs
   tf
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -59,11 +60,11 @@ find_package(Eigen REQUIRED)
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  armInitializeMotors.srv
+  armPosition.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -73,10 +74,10 @@ find_package(Eigen REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   actionlib_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  actionlib_msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -141,7 +142,7 @@ add_executable(armcontrol_action_server src/armcontrol_action_server.cpp)
 #add_executable(armcontrol_action_client src/armcontrol_action_client.cpp)
 add_executable(arm_pick_place src/arm_pick_place.cpp)
 add_executable(armcontrol_driver src/armcontrol_driver.cpp)
-add_executable(joint_state_publisher src/joint_state_publisher.cpp)
+add_executable(joint_state_publisher_fedar src/joint_state_publisher.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -163,7 +164,7 @@ target_link_libraries(armcontrol_driver
   ${catkin_LIBRARIES}
   ${EIGEN_INCLUDE_DIRS}
 )
-target_link_libraries(joint_state_publisher
+target_link_libraries(joint_state_publisher_fedar
   ${catkin_LIBRARIES}
   ${EIGEN_INCLUDE_DIRS}
 )

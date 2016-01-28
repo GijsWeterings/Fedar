@@ -1,19 +1,22 @@
 <launch>
 
-    <node name="threemxl_com" pkg="shared_serial" type="server" output="screen">
-        <param name="port_name" value="/dev/ttyUSB0"/>
+    <node name="threemxl_com" pkg="shared_serial" type="server">
+        <param name="port_name" value="/dev/ttyUSB1"/>
         <param name="port_type" value="RS485_FTDI"/>
         <param name="baud_rate" value="921600"/>
     </node>
-
-    <!-- <node name="fedar_position_publisher" pkg="environment" type="fedar_position_publisher" />
-    <node name="armcontrol_action_client" pkg="armcontrol" type="arm_pick_place" />
+    <node name="ingredientfinder" pkg="ingredientfinder" type="ingredientfinder" />
+     <node name="fedar_position_publisher" pkg="environment" type="fedar_position_publisher" />
+    <!--<node name="arm_pick_place" pkg="armcontrol" type="arm_pick_place" />
     <node name="armcontrol_action_server" pkg="armcontrol" type="armcontrol_action_server" />
-    <node name="armcontrol_driver" pkg="armcontrol" type="armcontrol_driver" output="screen" /> -->
-    <!-- <node name="joint_state_publisher" pkg="armcontrol" type="joint_state_publisher" /> -->
+    <node name="armcontrol_driver" pkg="armcontrol" type="armcontrol_driver" /> -->
 
-    <!-- <include file="$(find openni_launch)/launch/openni.launch" />
-    <include file="$(find ar_track_alvar)/launch/my_indiv.launch" /> -->
-    <!-- <include file="$(find moveit)/launch/fedar.launch" /> -->
+    <node name="platformcontrol" pkg="platformcontrol" type="platformcontrol" output="screen" />
+
+    <!-- <node name="joint_state_publisher_fedar" pkg="armcontrol" type="joint_state_publisher_fedar" /> -->
+
+    <include file="$(find openni_launch)/launch/openni.launch" />
+    <include file="$(find ar_track_alvar)/launch/my_indiv.launch" />
+    <include file="$(find moveit)/launch/fedar.launch" />
 
 </launch>

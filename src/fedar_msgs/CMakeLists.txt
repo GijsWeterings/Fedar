@@ -29,11 +29,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 
-#add_message_files(
-#  FILES Job.msg
-#  DIRECTORY msg
-#)
+add_message_files(
+  FILES job.msg
+  DIRECTORY msg
+)
 
-#generate_messages(
-#  DEPENDENCIES std_msgs
-#)
+generate_messages(
+  DEPENDENCIES std_msgs
+)

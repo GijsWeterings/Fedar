@@ -1,0 +1,9 @@
+id 108; init; hb 1; mode ext_init; speed -0.2; torque -0.2; id 109; init; hb 1; mode ext_init; speed 0.2; torque 0.2; id 110; init; hb 1; mode ext_init; speed -0.2; torque -0.2
+
+id 110; init; hb 1; mode pos; speed 0.8; pos 0.8
+
+id 108; init; mode pos; speed 0.2; pos 0.62; id 109; init; mode pos; speed 0.2; pos 0.22
+
+id 110; init; hb 1; mode pos; speed 0.2; pos -1.8
+
+id 108; init; mode pos; speed 0.2; pos 0; id 109; init; mode pos; speed 0.2; pos 0

@@ -6,7 +6,7 @@ project(jobqueue)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  #Job
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -43,17 +43,18 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  task.msg
+)
 
 ## Generate services in the 'srv' folder
-#add_service_files( DIRECTORY srv
-#  FILES
-#  addJobToQueue.srv
-#)
+add_service_files( DIRECTORY srv
+  FILES
+  addJobToQueue.srv
+  getAllJobs.srv
+  nextjob.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -63,7 +64,7 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-#generate_messages(DEPENDENCIES jobqueue ${MESSAGE_DEPENDENCIES} fedar_msgs)
+generate_messages(DEPENDENCIES jobqueue ${MESSAGE_DEPENDENCIES} fedar_msgs)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -124,16 +125,16 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(jobqueue_node src/jobqueue_node.cpp)
-#add_executable(jobqueue src/jobqueue.cpp)
+add_executable(jobqueue src/jobqueue.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(jobqueue_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(jobqueue ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-#target_link_libraries(jobqueue
-#  ${catkin_LIBRARIES}
-#)
+target_link_libraries(jobqueue
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

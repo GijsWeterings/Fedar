@@ -4,12 +4,11 @@
 #include <std_msgs/Float32.h>
 #include <tf/transform_broadcaster.h>
 #include <wristcontrol/scoopPosition.h>
-#include <wristcontrol/scoopPositionRequest.h>
-#include <wristcontrol/scoopPositionResponse.h>
+#include <wristcontrol/wristInitializeMotors.h>
 
-C3mxlROS* initializeWheel(int id);
+bool initializeMotor(wristcontrol::wristInitializeMotors::Request  &req, wristcontrol::wristInitializeMotors::Response &res);
 
-// bool scoopMotion(std::string& request, bool& response);
+bool scoopMotion(wristcontrol::scoopPosition::Request  &req, wristcontrol::scoopPosition::Response &res);
 
 void closeScoop();
 
@@ -18,5 +17,5 @@ void openScoop();
 void updatePosition();
 
 C3mxlROS *motorWrist;
-ros::ServiceServer scoopPosservice;
-ros::Rate rate(30);
+ros::ServiceServer scoopPosService;
+ros::ServiceServer initializeService;

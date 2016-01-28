@@ -21,11 +21,43 @@ C3mxlROS* initializeWheel(int id){
     return motor;
 }
 
+bool initializeMotor(platformcontrol::platformInitializeMotors::Request  &req, platformcontrol::platformInitializeMotors::Response &res) {
+    motorLeft  = initializeWheel(106);
+    motorRight = initializeWheel(107);
+    return true;
+}
+
+bool goHome(platformcontrol::platformHome::Request  &req, platformcontrol::platformHome::Response &res) {
+    goToPos(minPos);
+    return true;
+}
+
+bool goTo(platformcontrol::platformPosition::Request  &req, platformcontrol::platformPosition::Response &res) {
+    goToPos(req.position);
+    return true;
+}
+
+bool findLeftBoundary(platformcontrol::findLeftBoundary::Request  &req, platformcontrol::findLeftBoundary::Response &res) {
+    minPos = 0.0;
+
+    goToPos(minPos);
+    return true;
+}
+
+bool findRightBoundary(platformcontrol::findRightBoundary::Request  &req, platformcontrol::findRightBoundary::Response &res) {
+    maxPos = 1.35;
+    goToPos(maxPos);
+    return true;
+}
+
+void goToPos(float pos) {
+    motorLeft->setLinearPos(pos, 2.0);
+    motorRight->setLinearPos(pos, 2.0);
+}
+
 void executeTrajectory(const std_msgs::Float32::ConstPtr& msg) {
     updatePosition();
-
-    motorLeft->setLinearPos(msg->data, 20.0);
-    motorRight->setLinearPos(msg->data, 20.0);
+    goToPos(msg->data);
 }
 
 void updatePosition() {
@@ -34,12 +66,19 @@ void updatePosition() {
 }
 
 void updateTF() {
-    updatePosition();
+    // updatePosition();
+    // motorLeft->getPos();
+    // motorRight->getPos();
+    // //motorLeft->presentPos()
+    tf::TransformBroadcaster br;
 
     tf::Transform transform;
-    transform.setOrigin( tf::Vector3(0, motorLeft->presentPos(), 0.0) );
+    tf::Quaternion q;
+    transform.setOrigin( tf::Vector3(0.0, 0.0, 0.0) );
+    q.setRPY(0.0, 0.0, 0.0);
+    transform.setRotation(q);
 
-    //br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "base_link"));
+    // br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link", "world"));
 }
 
 int main(int argc, char **argv) {
@@ -52,11 +91,14 @@ int main(int argc, char **argv) {
     // Refresh rate
     ros::Rate loop_rate(30);
 
-    motorLeft  = initializeWheel(106);
-    motorRight = initializeWheel(107);
-
     // Subscriber
-    ros::Subscriber sub = nh.subscribe("platformposition", 1000, executeTrajectory);
+    // ros::Subscriber sub = nh.subscribe("platformposition", 1000, executeTrajectory);
+
+    platformInitializeMotorsService = nh.advertiseService("platformInitializeMotors", &initializeMotor);
+    platformPositionService = nh.advertiseService("platformPosition", &goTo);
+    platformHomeService = nh.advertiseService("platformHome", &goHome);
+    findLeftBoundaryService = nh.advertiseService("findLeftBoundary", &findLeftBoundary);
+    findRightBoundaryService = nh.advertiseService("findRightBoundary", &findRightBoundary);
 
     while(ros::ok()) {
         updateTF();

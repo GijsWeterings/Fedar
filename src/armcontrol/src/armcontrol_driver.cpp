@@ -5,12 +5,14 @@
 #include <tf/transform_broadcaster.h>
 #include <sensor_msgs/JointState.h>
 #include <threemxl/dxlassert.h>
-
+#include <armcontrol/armInitializeMotors.h>
 
 C3mxlROS* motor_upper;
 C3mxlROS* motor_lower;
 ros::Publisher jointPublisher;
 ros::Subscriber sub;
+ros::ServiceServer initializeService;
+
 
 void updateMotor();
 void getJointNames(std::vector<std::string>& names);
@@ -22,7 +24,7 @@ void getJointVelocities(std::vector<double>& vels);
  * @param  id The 3mxl bus ID of the corresponding motor.
  * @return    Pointer to a C3mxlROS object, used to control the motor.
  */
-C3mxlROS* initializeMotor(int id, int direction){
+C3mxlROS* initializeMotor(int id, float direction){
     // Initialize 3mxl node and set config
     C3mxlROS *motor = new C3mxlROS("/threemxl_com");
     CDxlConfig *config  = new CDxlConfig();
@@ -31,23 +33,31 @@ C3mxlROS* initializeMotor(int id, int direction){
     motor->init(false);
     motor->set3MxlMode(EXTERNAL_INIT);
     motor->setAcceleration(0.5);
-    motor->setSpeed(0.2);
-    motor->setTorque(0.2);
+    motor->setSpeed(direction * 0.2);
+    motor->setTorque(direction * 0.2);
     usleep(10000);
-    // motor->set3MxlMode(POSITION_MODE);
+    motor->getPos();
+
+    while(motor->presentSpeed() > 0.05) {
+        usleep(1000);
+        motor->getPos();
+    }
     // motor->setPos(0.3, 0.1);
     return motor;
 }
 
+
+bool initialize(armcontrol::armInitializeMotors::Request  &req, armcontrol::armInitializeMotors::Response &res) {
+    motor_upper  = initializeMotor(108, -1.0);
+    motor_lower  = initializeMotor(109, 1.0);
+    return true;
+}
+
 void executeTrajectory(trajectory_msgs::JointTrajectory msg) {
+    motor_upper->set3MxlMode(POSITION_MODE);
+    motor_lower->set3MxlMode(POSITION_MODE);
     ROS_INFO("%s", "Executing trajectory[]...");
     updateMotor();
-
-    // if(!(msg.joint_names[0] == "upper_arm" && msg.joint_names[1] == "lower_arm")) {
-    //     ROS_ERROR("%s", msg.joint_names[0]);
-    //     ROS_ERROR("%s", "[ARM] We're dealing with different motors, abort!");
-    //     return;
-    // }
 
     std_msgs::Header header = msg.header;
     // Wait for starting point header.stamp
@@ -60,12 +70,27 @@ void executeTrajectory(trajectory_msgs::JointTrajectory msg) {
     ROS_INFO("%d", size);
     // ROS_INFO("%d", msg.points[0]);
     for(int32_t i = 0; i < size; i++) {
+        while(motor_upper->presentSpeed() > 0.05 || motor_lower->presentSpeed() > 0.05) {
+            usleep(1000);
+            motor_upper->getPos();
+            motor_lower->getPos();
+        }
         ROS_INFO("%s", "Running next point");
         trajectory_msgs::JointTrajectoryPoint this_point = msg.points[i];
 
         motor_lower->setPos(this_point.positions[0], this_point.velocities[0], this_point.accelerations[0]);
         motor_upper->setPos(this_point.positions[1], this_point.velocities[1], this_point.accelerations[1]);
+        // motor_lower->setPos(0.5, this_point.velocities[0], this_point.accelerations[0]);
+        // motor_upper->setPos(0.5, 0.3, 0.2);
+        // usleep(1000000);
+        // while(motor_upper->presentSpeed() > 0.05 || motor_lower->presentSpeed() > 0.05) {
+        //     usleep(1000);
+        //     motor_upper->getPos();
+        //     motor_lower->getPos();
+        // }
+        // usleep(1000);
 
+        // motor_upper->setPos(0.5, 0.3, 0.2);
         updateMotor();
         while(ros::Time::now() - start < this_point.time_from_start) {
             usleep(100);
@@ -132,10 +157,10 @@ int main(int argc, char **argv) {
     // Refresh rate
     ros::Rate loop_rate(30);
 
-    motor_upper  = initializeMotor(108, 1);
-    motor_lower  = initializeMotor(109, 1);
     // Subscriber
     ros::Subscriber sub = nh.subscribe("command", 10, executeTrajectory);
+
+    initializeService = nh.advertiseService("armInitializeMotors", &initialize);
 
     while(ros::ok()) {
         ros::spinOnce();
