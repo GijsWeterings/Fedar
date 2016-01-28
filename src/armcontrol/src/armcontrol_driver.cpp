@@ -83,11 +83,11 @@ void executeTrajectory(trajectory_msgs::JointTrajectory msg) {
         // motor_lower->setPos(0.5, this_point.velocities[0], this_point.accelerations[0]);
         // motor_upper->setPos(0.5, 0.3, 0.2);
         // usleep(1000000);
-        // while(motor_upper->presentSpeed() > 0.05 || motor_lower->presentSpeed() > 0.05) {
-        //     usleep(1000);
-        //     motor_upper->getPos();
-        //     motor_lower->getPos();
-        // }
+        while(motor_upper->presentSpeed() > 0.05 || motor_lower->presentSpeed() > 0.05) {
+            usleep(1000);
+            motor_upper->getPos();
+            motor_lower->getPos();
+        }
         // usleep(1000);
 
         // motor_upper->setPos(0.5, 0.3, 0.2);

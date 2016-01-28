@@ -7,23 +7,23 @@
 */
 void receivePoseMarker(ar_track_alvar_msgs::AlvarMarkers msg) {
     int size = msg.markers.size();
-    tf::TransformListener tflisten;
-
-    tf::StampedTransform transform;
-    try{
-      tflisten.lookupTransform("/world", "/camera_link",
-                               ros::Time(0), transform);
-    }
-    catch (tf::TransformException ex){
-      ROS_ERROR("%s",ex.what());
-      ros::Duration(1.0).sleep();
-    }
+    // tf::TransformListener tflisten;
+    //
+    // tf::StampedTransform transform;
+    // try{
+    //   tflisten.lookupTransform("/world", "/camera_link",
+    //                            ros::Time(0), transform);
+    // }
+    // catch (tf::TransformException ex){
+    //   ROS_ERROR("%s",ex.what());
+    //   ros::Duration(1.0).sleep();
+    // }
 
     for(int i = 0; i < size; i++) {
         // Ignore marker id 255, it only identifies noise.
         if(msg.markers[i].id == 255) { continue; }
 
-        markerMap[msg.markers[i].id] = transform.getOrigin().y() + msg.markers[i].pose.pose.position.y;
+        markerMap[msg.markers[i].id] = offset + msg.markers[i].pose.pose.position.y;
     }
 }
 
@@ -49,12 +49,19 @@ bool ingredientPos(ingredientfinder::ingredientPos::Request  &req, ingredientfin
     return true;
 }
 
+void getLatestOffset(std_msgs::Float64 msg) {
+    offset = msg.data;
+}
+
+
 int main(int argc, char** argv) {
     ros::init(argc, argv, "ingredientfinder");
     ros::NodeHandle nh;
     ros::Subscriber sub;
+    ros::Subscriber fedarPos;
 
     sub = nh.subscribe("ar_pose_marker", 10, &receivePoseMarker);
+    fedarPos = nh.subscribe("worldOffset", 10, &getLatestOffset);
 
     ingredientPosService = nh.advertiseService("ingredientPos", &ingredientPos);
 

@@ -81,6 +81,14 @@ void updateTF() {
     // br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link", "world"));
 }
 
+void worldOffset(ros::Publisher pub) {
+    std_msgs::Float64 msg;
+    updatePosition();
+
+    msg.data = motorLeft->presentLinearPos();
+    pub.publish(msg);
+}
+
 int main(int argc, char **argv) {
     // Initialise node
     ros::init(argc, argv, "platformcontrol");
@@ -88,11 +96,17 @@ int main(int argc, char **argv) {
     // Initialise Nodehandler
     ros::NodeHandle nh;
 
+    ros::Publisher pub;
+
     // Refresh rate
     ros::Rate loop_rate(30);
 
     // Subscriber
     // ros::Subscriber sub = nh.subscribe("platformposition", 1000, executeTrajectory);
+    //
+
+    pub = nh.advertise<std_msgs::Float64>("worldOffset", 10);
+
 
     platformInitializeMotorsService = nh.advertiseService("platformInitializeMotors", &initializeMotor);
     platformPositionService = nh.advertiseService("platformPosition", &goTo);
@@ -101,6 +115,7 @@ int main(int argc, char **argv) {
     findRightBoundaryService = nh.advertiseService("findRightBoundary", &findRightBoundary);
 
     while(ros::ok()) {
+        worldOffset(pub);
         updateTF();
         ros::spinOnce();
         loop_rate.sleep();

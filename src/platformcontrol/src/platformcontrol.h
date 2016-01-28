@@ -2,6 +2,7 @@
 #include <threemxl/C3mxlROS.h>
 #include <threemxl/C3mxl.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Float64.h>
 #include <tf/transform_broadcaster.h>
 #include <platformcontrol/findLeftBoundary.h>
 #include <platformcontrol/findRightBoundary.h>
@@ -42,3 +43,5 @@ void executeTrajectory(const std_msgs::Float32::ConstPtr& msg);
 void updatePosition();
 
 void updateTF();
+
+void worldOffset(ros::Publisher pub);

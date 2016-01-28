@@ -186,7 +186,7 @@ class MovingToDeposit(smach.State):
 
     def execute(self, userdata):
         rospy.loginfo('Moving to deposit location')
-        # Statehelper.callService("platformPosition", platformPosition(), [userdata.currIngredient])
+        Statehelper.callService("platformPosition", platformPosition(), [254])
         return 'atDeposit'
 
 # Ensures plate is present
